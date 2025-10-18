@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - E-Library</title>
+    <link rel="stylesheet" href="./css/auth.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to your E-Library account</p>
+            </div>
+
+            <form id="loginForm" autocomplete="off" novalidate>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        autocomplete="off"
+                        required
+                        placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        autocomplete="new-password"
+                        required
+                        placeholder="Enter your password">
+                    <div id="passwordStrength"></div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span class="btn-text">Sign In</span>
+                    <span class="loading" style="display: none;">⏳</span>
+                </button>
+
+               
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="./signup.html">Sign up here</a></p>
+                <p><a href="./index.html">← Back to home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="./js/auth.js"></script>
+</body>
+</html>
