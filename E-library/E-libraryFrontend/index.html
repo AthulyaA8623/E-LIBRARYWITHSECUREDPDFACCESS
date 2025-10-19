@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Library - Your Digital Reading Companion</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <span>📚</span>E<span>Library</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#books">Books</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+            
+            <div class="user-menu" id="userMenu">
+                <a href="login.html" class="btn btn-primary">Login</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content" style="text-align: center; max-width: 800px; margin: 0 auto;">
+                    <h1 style="font-size: 3.5rem; margin-bottom: 1.5rem; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                        Discover Your Next<br>Favorite Book
+                    </h1>
+                    <p style="font-size: 1.3rem; color: rgba(255,255,255,0.9); margin-bottom: 3rem; line-height: 1.6;">
+                        Access thousands of books at your fingertips. Read anywhere, anytime with our digital library platform.
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="signup.html" class="btn btn-primary btn-lg">
+                            🚀 Start Reading Free
+                        </a>
+                        <a href="#features" class="btn btn-light btn-lg">
+                            📖 Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" style="padding: 5rem 0; background: rgba(255,255,255,0.1); backdrop-filter: blur(20px);">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <h2 style="color: white; margin-bottom: 1rem;">Why Choose E-Library?</h2>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 1.2rem;">Experience reading like never before</p>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Books Collection</div>
+                        <p style="color: var(--gray-600); margin-top: 1rem; font-size: 0.9rem;">
+                            Access a vast collection of books across all genres
+                        </p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📱</div>
+                        <div class="stat-number">Anywhere</div>
+                        <div class="stat-label">Read on Any Device</div>
+                        <p style="color: var(--gray-600); margin-top: 1rem; font-size: 0.9rem;">
+                            Continue reading seamlessly across all your devices
+                        </p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🔒</div>
+                        <div class="stat-number">Secure</div>
+                        <div class="stat-label">Safe & Private</div>
+                        <p style="color: var(--gray-600); margin-top: 1rem; font-size: 0.9rem;">
+                            Your reading data and preferences are protected
+                        </p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-number">Fast</div>
+                        <div class="stat-label">Lightning Fast</div>
+                        <p style="color: var(--gray-600); margin-top: 1rem; font-size: 0.9rem;">
+                            Quick loading and smooth reading experience
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Books Preview -->
+        <section id="books" style="padding: 5rem 0;">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 3rem;">
+                    <h2 style="color: white; margin-bottom: 1rem;">Popular Books</h2>
+                    <p style="color: rgba(255,255,255,0.8);">Discover our most loved titles</p>
+                </div>
+                
+                <div class="books-grid">
+                    <div class="book-card">
+                        <div class="book-cover">
+                            📖
+                        </div>
+                        <div class="book-info">
+                            <div class="book-title">The Great Gatsby</div>
+                            <div class="book-author">F. Scott Fitzgerald</div>
+                            <div class="book-category">Fiction</div>
+                            <p style="color: var(--gray-600); font-size: 0.9rem; margin: 1rem 0;">
+                                A classic novel of the Jazz Age...
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="book-card">
+                        <div class="book-cover">
+                            📖
+                        </div>
+                        <div class="book-info">
+                            <div class="book-title">To Kill a Mockingbird</div>
+                            <div class="book-author">Harper Lee</div>
+                            <div class="book-category">Fiction</div>
+                            <p style="color: var(--gray-600); font-size: 0.9rem; margin: 1rem 0;">
+                                A gripping tale of justice and childhood...
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="book-card">
+                        <div class="book-cover">
+                            📖
+                        </div>
+                        <div class="book-info">
+                            <div class="book-title">1984</div>
+                            <div class="book-author">George Orwell</div>
+                            <div class="book-category">Fiction</div>
+                            <p style="color: var(--gray-600); font-size: 0.9rem; margin: 1rem 0;">
+                                A dystopian social science fiction novel...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 3rem;">
+                    <a href="signup.html" class="btn btn-primary btn-lg">View All Books</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section style="padding: 4rem 0; background: rgba(255,255,255,0.1); backdrop-filter: blur(20px);">
+            <div class="container">
+                <div class="card" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                    <h3 style="margin-bottom: 1rem;">Ready to Start Reading?</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 2rem;">
+                        Join thousands of readers who have already discovered their next favorite book on E-Library.
+                    </p>
+                    <a href="signup.html" class="btn btn-primary btn-lg">Get Started Today</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: rgba(0,0,0,0.3); color: white; padding: 3rem 0; margin-top: 4rem;">
+        <div class="container">
+            <div style="text-align: center;">
+                <p style="margin-bottom: 1rem;">&copy; 2024 E-Library. All rights reserved.</p>
+                <p style="color: rgba(255,255,255,0.7);">Your digital reading companion</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

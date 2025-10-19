@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading List - E-Library</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/user.css">
+    <style>
+        .reading-list-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+        
+        .reading-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .reading-list-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .reading-list-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.3s ease;
+        }
+        
+        .reading-list-item:hover {
+            background-color: #f7fafc;
+        }
+        
+        .reading-list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .book-cover-small {
+            width: 80px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .book-cover-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .default-cover-small {
+            width: 80px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            border-radius: 8px;
+        }
+        
+        .book-details {
+            flex: 1;
+        }
+        
+        .book-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+        
+        .book-author {
+            color: #718096;
+            margin-bottom: 10px;
+        }
+        
+        .book-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #a0aec0;
+        }
+        
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .notes-section {
+            margin-top: 15px;
+        }
+        
+        .notes-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .notes-display {
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        .empty-reading-list {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: #718096;
+        }
+        
+        .reading-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-not-started {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .status-reading {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        
+        .status-completed {
+            background: #c6f6d5;
+            color: #276749;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="../index.html" class="logo">E<span>Library</span></a>
+            <div class="user-menu" id="userMenu">
+                <!-- Dynamic content from JavaScript -->
+            </div>
+        </nav>
+    </header>
+
+    <div class="user-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>User Panel</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html">📊 Dashboard</a></li>
+                <li><a href="library.html">📚 Library</a></li>
+                <li><a href="reading.html" class="active">📖 Reading List</a></li>
+                <li><a href="profile.html">👤 Profile</a></li>
+                <li><a href="../index.html">🏠 Back to Home</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="user-content">
+            <div class="page-header">
+                <h1>My Reading List</h1>
+                <p>Manage your personal reading collection and track your progress</p>
+            </div>
+
+            <!-- Reading Stats -->
+            <div class="reading-stats">
+                <div class="stat-card mini">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalBooks">0</div>
+                        <div class="stat-label">Total Books</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="readingNow">0</div>
+                        <div class="stat-label">Reading Now</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="completed">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="favorites">0</div>
+                        <div class="stat-label">Favorites</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reading List -->
+            <div class="reading-list-container">
+                <div id="readingListContent">
+                    <!-- Reading list items will be populated by JavaScript -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="emptyReadingList" class="empty-reading-list" style="display: none;">
+                    <div class="empty-icon">📚</div>
+                    <h3>Your reading list is empty</h3>
+                    <p>Start building your reading collection by adding books from the library.</p>
+                    <a href="library.html" class="btn btn-primary">Browse Library</a>
+                </div>
+                
+                <!-- Loading State -->
+                <div id="loadingReadingList" class="empty-reading-list">
+                    <div class="empty-icon">⏳</div>
+                    <h3>Loading your reading list...</h3>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notes Modal -->
+    <div id="notesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Notes</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="notesBookInfo"></div>
+                <textarea id="notesText" class="notes-input" placeholder="Add your notes about this book..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="readingManager.closeNotesModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="readingManager.saveNotes()">Save Notes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="../js/auth-system.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/user.js"></script>
+    <script src="../js/reading.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

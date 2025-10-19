@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - E-Library</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/user.css">
+    <style>
+        .library-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e1e5e9;
+            position: relative;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .default-cover {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .book-info {
+            margin-bottom: 15px;
+        }
+        
+        .book-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+        
+        .book-author {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 10px;
+        }
+        
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #a0aec0;
+            margin-bottom: 15px;
+        }
+        
+        .book-access {
+            margin-bottom: 15px;
+        }
+        
+        .book-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            flex: 1;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            transform: translateY(-1px);
+        }
+        
+        .btn-save.saved {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .access-badge {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .save-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .save-indicator.saved {
+            display: block;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .save-indicator.saving {
+            display: block;
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            color: white;
+        }
+
+        /* Reading list counter */
+        .reading-list-counter {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Quick actions bar */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .quick-action-btn:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        .quick-action-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="../index.html" class="logo">E<span>Library</span></a>
+            <div class="user-menu" id="userMenu">
+                <!-- Dynamic content from JavaScript -->
+            </div>
+        </nav>
+    </header>
+
+    <div class="user-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>User Panel</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html">📊 Dashboard</a></li>
+                <li><a href="library.html" class="active">📚 Library</a></li>
+                <li><a href="reading.html">📖 Reading List</a></li>
+                <li><a href="profile.html">👤 Profile</a></li>
+                <li><a href="../index.html">🏠 Back to Home</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="user-content">
+            <div class="page-header">
+                <h1>Digital Library</h1>
+                <p>Browse our collection of books and start reading today</p>
+            </div>
+
+            <!-- Reading List Counter -->
+            <div class="reading-list-counter" id="readingListCounter" style="display: none;">
+                <span>📖</span>
+                <span id="readingListCount">0</span> books saved
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="libraryManager.showSavedBooks()">
+                    <span>📖</span>
+                    My Saved Books
+                </button>
+                <button class="quick-action-btn" onclick="libraryManager.showFeaturedBooks()">
+                    <span>⭐</span>
+                    Featured Books
+                </button>
+                <button class="quick-action-btn" onclick="libraryManager.showRecentBooks()">
+                    <span>🆕</span>
+                    Recently Added
+                </button>
+            </div>
+
+            <!-- Library Controls -->
+            <div class="library-controls">
+                <div class="search-box">
+                    <input type="text" id="searchLibrary" class="form-control" placeholder="Search books by title, author, or category...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <select id="categoryFilter" class="form-control">
+                    <option value="">All Categories</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Science">Science</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Biography">Biography</option>
+                    <option value="History">History</option>
+                </select>
+                <select id="accessFilter" class="form-control">
+                    <option value="">All Access</option>
+                    <option value="public">Public</option>
+                    <option value="premium">Premium</option>
+                </select>
+                <button class="btn btn-outline" onclick="libraryManager.clearFilters()">
+                    <span class="btn-icon">🔄</span>
+                    Reset
+                </button>
+            </div>
+
+            <!-- Books Grid -->
+            <div class="books-grid" id="booksGrid">
+                <!-- Books will be populated by JavaScript -->
+            </div>
+
+            <!-- Loading and Empty States -->
+            <div id="loadingState" class="loading-state" style="display: none;">
+                <div class="loading-spinner">⏳</div>
+                <p>Loading books...</p>
+            </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-icon">📚</div>
+                <h3>No Books Found</h3>
+                <p>No books match your search criteria.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Book Details Modal -->
+    <div id="bookDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book Details</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="bookDetailsContent">
+                    <!-- Book details will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="libraryManager.closeModal()">Close</button>
+                <button class="btn btn-primary" id="downloadBookBtn">Download PDF</button>
+                <button class="btn btn-secondary" id="addToReadingListBtn">
+                    <span>📖</span>
+                    Add to Reading List
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Confirmation Toast -->
+    <div id="saveToast" class="save-toast" style="display: none;">
+        <div class="toast-content">
+            <span class="toast-icon">✅</span>
+            <span class="toast-message">Book saved to your reading list!</span>
+            <button class="toast-close" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="../js/auth-system.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/user.js"></script>
+    <script src="../js/library.js"></script>
+</body>
+</html>
+
+
+

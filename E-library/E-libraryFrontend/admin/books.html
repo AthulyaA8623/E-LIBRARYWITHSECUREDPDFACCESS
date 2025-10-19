@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Books - E-Library Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            border: 1px solid #e1e5e9;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e8ecef;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: all 0.2s ease;
+            padding: 0 5px;
+        }
+
+        .close-modal:hover {
+            color: #ffeb3b;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 25px;
+            background-color: #f8f9fa;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #e8ecef;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="file"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: white;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            background-color: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="file"]:hover {
+            border-color: #667eea;
+            background-color: #edf2f7;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #718096;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        /* Checkbox Styles */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        /* Current Files Display */
+        .current-files {
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .current-files h4 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .current-file {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .current-file strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .current-file img {
+            max-width: 100px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .current-file span,
+        .current-file small {
+            display: block;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(113, 128, 150, 0.4);
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+            background: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #4a5568;
+            border: 2px solid #cbd5e0;
+        }
+
+        .btn-outline:hover {
+            background: #f7fafc;
+            border-color: #a0aec0;
+        }
+
+        /* Required field indicator */
+        .required::after {
+            content: " *";
+            color: #e53e3e;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+                max-height: 95vh;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+            
+            .modal-header,
+            .modal-footer {
+                padding: 15px 20px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        /* Scrollbar Styling for Modal */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        /* Warning message styles */
+        .warning-message {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .warning-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .warning-message h4 {
+            color: #e53e3e;
+            margin-bottom: 10px;
+        }
+
+        .warning-message p {
+            color: #718096;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="../index.html" class="logo">E<span>Library</span> Admin</a>
+            <div class="user-menu" id="userMenu">
+                <!-- Dynamic content from JavaScript -->
+            </div>
+        </nav>
+    </header>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Admin Panel</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html">📊 Dashboard</a></li>
+                <li><a href="users.html">👥 Manage Users</a></li>
+                <li><a href="books.html" class="active">📚 Manage Books</a></li>
+                <li><a href="add-book.html">➕ Add New Book</a></li>
+                <li><a href="../index.html">🏠 Back to Site</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Manage Books</h1>
+                    <p class="subtitle">View, edit, and manage all books in the library</p>
+                </div>
+                <div class="header-actions">
+                    <a href="add-book.html" class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        Add New Book
+                    </a>
+                </div>
+            </div>
+
+            <!-- Books Controls -->
+            <div class="controls-bar">
+                <div class="search-box">
+                    <input type="text" id="searchBooks" class="form-control" placeholder="Search books by title, author, or ISBN...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="science">Science</option>
+                        <option value="technology">Technology</option>
+                        <option value="history">History</option>
+                        <option value="biography">Biography</option>
+                        <option value="business">Business</option>
+                        <option value="self-help">Self Help</option>
+                    </select>
+                    <select id="statusFilter" class="form-control">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <select id="sortBy" class="form-control">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="title">Title A-Z</option>
+                    </select>
+                    <button class="btn btn-outline" onclick="window.booksManager.clearFilters()">
+                        <span class="btn-icon">🔄</span>
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Books Stats -->
+            <div class="stats-grid mini">
+                <div class="stat-card mini">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalBooksCount">0</div>
+                        <div class="stat-label">Total Books</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">🟢</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="activeBooksCount">0</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="featuredBooksCount">0</div>
+                        <div class="stat-label">Featured</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">📥</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalDownloads">0</div>
+                        <div class="stat-label">Total Downloads</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Books Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Books Library</h3>
+                    <div class="table-actions">
+                        <button class="btn btn-sm btn-outline" onclick="window.booksManager.exportBooks()">
+                            <span class="btn-icon">📥</span>
+                            Export
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="window.booksManager.bulkDelete()" id="bulkDeleteBtn" style="display: none;">
+                            <span class="btn-icon">🗑️</span>
+                            Delete Selected
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="booksTable">
+                        <thead>
+                            <tr>
+                                <th width="50">
+                                    <input type="checkbox" id="selectAllBooks" onchange="window.booksManager.toggleSelectAll(this)">
+                                </th>
+                                <th>Book</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Downloads</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th>Added Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody">
+                            <!-- Books will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="table-info" id="tableInfo">
+                        Showing 0 books
+                    </div>
+                    <div class="pagination" id="booksPagination">
+                        <!-- Pagination will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div id="editBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Book</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editBookForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editBookId" name="bookId">
+                    
+                    <div class="form-group">
+                        <label for="editTitle" class="required">Book Title</label>
+                        <input type="text" id="editTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editAuthor" class="required">Author</label>
+                        <input type="text" id="editAuthor" name="author" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editDescription" class="required">Description</label>
+                        <textarea id="editDescription" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editCategory" class="required">Category</label>
+                            <select id="editCategory" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Fiction">Fiction</option>
+                                <option value="Non-Fiction">Non-Fiction</option>
+                                <option value="Science">Science</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Biography">Biography</option>
+                                <option value="History">History</option>
+                                <option value="Business">Business</option>
+                                <option value="Self Help">Self Help</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editLanguage" class="required">Language</label>
+                            <select id="editLanguage" name="language" required>
+                                <option value="English">English</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="French">French</option>
+                                <option value="German">German</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editPages" class="required">Pages</label>
+                            <input type="number" id="editPages" name="pages" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editPublicationYear" class="required">Publication Year</label>
+                            <input type="number" id="editPublicationYear" name="publicationYear" min="1000" max="2030" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPublisher" class="required">Publisher</label>
+                        <input type="text" id="editPublisher" name="publisher" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editIsbn">ISBN</label>
+                        <input type="text" id="editIsbn" name="isbn" placeholder="Optional">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editTags">Tags</label>
+                        <input type="text" id="editTags" name="tags" placeholder="Separate tags with commas (Optional)">
+                    </div>
+                    
+                    <!-- Current files display -->
+                    <div id="currentFiles"></div>
+                    
+                    <div class="form-group">
+                        <label for="editCoverImage">Cover Image</label>
+                        <input type="file" id="editCoverImage" name="coverImage" accept="image/*">
+                        <small>Leave empty to keep current cover image</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPdfFile">PDF File</label>
+                        <input type="file" id="editPdfFile" name="pdfFile" accept=".pdf">
+                        <small>Leave empty to keep current PDF file</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editAccessLevel">Access Level</label>
+                            <select id="editAccessLevel" name="accessLevel">
+                                <option value="public">Public</option>
+                                <option value="premium">Premium</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="editIsActive" name="isActive">
+                                Active Book
+                            </label>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="editIsFeatured" name="isFeatured">
+                                Featured Book
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="window.booksManager.closeEditModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="window.booksManager.updateBook()">Update Book</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Book</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <div class="warning-icon">⚠️</div>
+                    <h4>Are you sure you want to delete this book?</h4>
+                    <p>This action cannot be undone. All book data, including downloads and user reviews, will be permanently deleted.</p>
+                    <p><strong id="deleteBookTitle">Book Title</strong></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="window.booksManager.closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBookBtn">Delete Book</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Delete Modal -->
+    <div id="bulkDeleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Multiple Books</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <div class="warning-icon">⚠️</div>
+                    <h4>Are you sure you want to delete <span id="selectedBooksCount">0</span> books?</h4>
+                    <p>This action cannot be undone. All selected books and their data will be permanently deleted.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="window.booksManager.closeBulkDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="window.booksManager.confirmBulkDelete()">Delete Selected Books</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Details Modal -->
+    <div id="bookDetailsModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Book Details</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="book-details" id="bookDetailsContent">
+                    <!-- Book details will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="window.booksManager.closeDetailsModal()">Close</button>
+                <button class="btn btn-primary" onclick="window.booksManager.editBookFromDetails()">Edit Book</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Load in this exact order -->
+    <script src="../js/auth-system.js"></script>
+    <script src="../js/main.js"></script>
+    <!-- Then load page-specific scripts -->
+    <script src="../js/admin.js"></script>
+    <script src="../js/admin-books.js"></script>
+
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Books - E-Library Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            border: 1px solid #e1e5e9;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e8ecef;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: all 0.2s ease;
+            padding: 0 5px;
+        }
+
+        .close-modal:hover {
+            color: #ffeb3b;
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 25px;
+            background-color: #f8f9fa;
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #e8ecef;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="file"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: white;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            background-color: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="file"]:hover {
+            border-color: #667eea;
+            background-color: #edf2f7;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #718096;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        /* Checkbox Styles */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        /* Current Files Display */
+        .current-files {
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .current-files h4 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .current-file {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .current-file strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .current-file img {
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .current-file span,
+        .current-file small {
+            display: block;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(113, 128, 150, 0.4);
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        }
+
+        /* Required field indicator */
+        .form-group label[for*="edit"]:after {
+            content: " *";
+            color: #e53e3e;
+        }
+
+        .form-group label[for="editIsbn"]:after,
+        .form-group label[for="editTags"]:after,
+        .form-group label[for="editCoverImage"]:after,
+        .form-group label[for="editPdfFile"]:after,
+        .form-group label[for="editAccessLevel"]:after {
+            content: "";
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+                max-height: 95vh;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+            
+            .modal-header,
+            .modal-footer {
+                padding: 15px 20px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        /* Scrollbar Styling for Modal */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="../index.html" class="logo">E<span>Library</span> Admin</a>
+            <div class="user-menu" id="userMenu">
+                
+            </div>
+        </nav>
+    </header>
+
+    <div class="admin-layout">
+ 
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Admin Panel</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html">📊 Dashboard</a></li>
+                <li><a href="users.html">👥 Manage Users</a></li>
+                <li><a href="books.html" class="active">📚 Manage Books</a></li>
+                <li><a href="add-book.html">➕ Add New Book</a></li>
+                <li><a href="../index.html">🏠 Back to Site</a></li>
+            </ul>
+        </aside>
+
+       
+        <main class="admin-content">
+         
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Manage Books</h1>
+                    <p class="subtitle">View, edit, and manage all books in the library</p>
+                </div>
+                <div class="header-actions">
+                    <a href="add-book.html" class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        Add New Book
+                    </a>
+                </div>
+            </div>
+
+        
+            <div class="controls-bar">
+                <div class="search-box">
+                    <input type="text" id="searchBooks" class="form-control" placeholder="Search books by title, author, or ISBN...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="science">Science</option>
+                        <option value="technology">Technology</option>
+                        <option value="history">History</option>
+                        <option value="biography">Biography</option>
+                        <option value="business">Business</option>
+                        <option value="self-help">Self Help</option>
+                    </select>
+                    <select id="statusFilter" class="form-control">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <select id="sortBy" class="form-control">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="title">Title A-Z</option>
+                    </select>
+                    <button class="btn btn-outline" onclick="booksManager.clearFilters()">
+                        <span class="btn-icon">🔄</span>
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+        
+            <div class="stats-grid mini">
+                <div class="stat-card mini">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalBooksCount">0</div>
+                        <div class="stat-label">Total Books</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">🟢</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="activeBooksCount">0</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="featuredBooksCount">0</div>
+                        <div class="stat-label">Featured</div>
+                    </div>
+                </div>
+                <div class="stat-card mini">
+                    <div class="stat-icon">📥</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalDownloads">0</div>
+                        <div class="stat-label">Total Downloads</div>
+                    </div>
+                </div>
+            </div>
+
+           
+            <div class="card">
+                <div class="card-header">
+                    <h3>Books Library</h3>
+                    <div class="table-actions">
+                        <button class="btn btn-sm btn-outline" onclick="booksManager.exportBooks()">
+                            <span class="btn-icon">📥</span>
+                            Export
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="booksManager.bulkDelete()" id="bulkDeleteBtn" style="display: none;">
+                            <span class="btn-icon">🗑️</span>
+                            Delete Selected
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="booksTable">
+                        <thead>
+                            <tr>
+                                <th width="50">
+                                    <input type="checkbox" id="selectAllBooks" onchange="booksManager.toggleSelectAll(this)">
+                                </th>
+                                <th>Book</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Downloads</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th>Added Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody">
+                          </tbody>
+                    </table>
+                </div>
+                <div class="table-footer">
+                    <div class="table-info" id="tableInfo">
+                        Showing 0 books
+                    </div>
+                    <div class="pagination" id="booksPagination">
+                           </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+  
+<div id="editBookModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+            <h3>Edit Book</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <form id="editBookForm" enctype="multipart/form-data">
+            <div class="modal-body">
+                <div data-book-id=""></div>
+                
+                <div class="form-group">
+                    <label for="editTitle">Book Title *</label>
+                    <input type="text" id="editTitle" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editAuthor">Author *</label>
+                    <input type="text" id="editAuthor" name="author" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">Description *</label>
+                    <textarea id="editDescription" name="description" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editCategory">Category *</label>
+                        <select id="editCategory" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Science">Science</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Biography">Biography</option>
+                            <option value="History">History</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editLanguage">Language *</label>
+                        <select id="editLanguage" name="language" required>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPages">Pages *</label>
+                        <input type="number" id="editPages" name="pages" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPublicationYear">Publication Year *</label>
+                        <input type="number" id="editPublicationYear" name="publicationYear" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPublisher">Publisher *</label>
+                    <input type="text" id="editPublisher" name="publisher" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editIsbn">ISBN</label>
+                    <input type="text" id="editIsbn" name="isbn">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editTags">Tags</label>
+                    <input type="text" id="editTags" name="tags" placeholder="Separate tags with commas">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editCoverImage">Cover Image</label>
+                    <input type="file" id="editCoverImage" name="coverImage" accept="image/*">
+                    <small>Leave empty to keep current cover</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPdfFile">PDF File</label>
+                    <input type="file" id="editPdfFile" name="pdfFile" accept=".pdf">
+                    <small>Leave empty to keep current PDF</small>
+                </div>
+                
+                <div id="currentFiles"></div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editAccessLevel">Access Level</label>
+                        <select id="editAccessLevel" name="accessLevel">
+                            <option value="public">Public</option>
+                            <option value="premium">Premium</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="editIsActive" name="isActive">
+                            Active
+                        </label>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="editIsFeatured" name="isFeatured">
+                            Featured
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="window.booksManager.closeEditModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="window.booksManager.updateBook()">Update Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    
+    <div id="deleteBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Book</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <div class="warning-icon">⚠️</div>
+                    <h4>Are you sure you want to delete this book?</h4>
+                    <p>This action cannot be undone. All book data, including downloads and user reviews, will be permanently deleted.</p>
+                    <p><strong id="deleteBookTitle">Book Title</strong></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="booksManager.closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBookBtn">Delete Book</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="bulkDeleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Multiple Books</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <div class="warning-icon">⚠️</div>
+                    <h4>Are you sure you want to delete <span id="selectedBooksCount">0</span> books?</h4>
+                    <p>This action cannot be undone. All selected books and their data will be permanently deleted.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="booksManager.closeBulkDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="booksManager.confirmBulkDelete()">Delete Selected Books</button>
+            </div>
+        </div>
+    </div>
+
+ 
+    <div id="bookDetailsModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Book Details</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="book-details" id="bookDetailsContent">
+                     </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="booksManager.closeDetailsModal()">Close</button>
+                <button class="btn btn-primary" onclick="booksManager.editBookFromDetails()">Edit Book</button>
+            </div>
+        </div>
+    </div>
+
+ 
+    <div id="notificationContainer" class="notification-container"></div>
+<script src="../js/auth-system.js"></script>
+    <script src="../js/main.js"></script>
+   ] <script src="../js/admin.js"></script>
+    <script src="../js/admin-books.js"></script>
+
+</body>
+</html> -->
