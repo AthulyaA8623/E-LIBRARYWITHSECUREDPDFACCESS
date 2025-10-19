@@ -1,0 +1,69 @@
+# ========================================
+# 🚫 General OS & Editor Files
+# ========================================
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+.env.*.local
+
+# ========================================
+# ⚙️ Node & Dependency Folders
+# ========================================
+node_modules/
+e-library-backend/node_modules/
+e-library-frontend/node_modules/
+
+# ========================================
+# 📦 Build & Cache Files
+# ========================================
+dist/
+build/
+.cache/
+coverage/
+.vscode/
+.idea/
+*.tmp
+*.swp
+*.bak
+
+# ========================================
+# 📤 Uploads & User Files
+# ========================================
+e-library-backend/uploads/
+uploads/
+*.pdf
+*.epub
+
+# ========================================
+# 🧪 Temporary / Test Files
+# ========================================
+test-users.html
+test-login.js
+test-routes.js
+check-db.js
+check-users.js
+create-demo-users.js
+create-sample-data.js
+reset-admin-password.js
+
+# ========================================
+# 💾 System-specific
+# ========================================
+desktop.ini
+*.lnk
+
+# ========================================
+# 🔐 Credentials / Sensitive Files
+# ========================================
+*.pem
+*.key
+*.crt
+*.pfx
+*.cer
+*.csr
+*.pub
