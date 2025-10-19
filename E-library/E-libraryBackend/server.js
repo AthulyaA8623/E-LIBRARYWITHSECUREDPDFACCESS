@@ -7,14 +7,13 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-<<<<<<< HEAD
-//atlas
-const dotenv = require('dotenv');
-const connectDB = require('./config/database');
-dotenv.config();
-connectDB();
-=======
->>>>>>> b573e999f43dc5a83a3db8d920e2687fd7968f8a
+//atlas 
+
+// const dotenv = require('dotenv');
+// const connectDB = require('./config/database');
+
+// dotenv.config();
+// connectDB();
 
 // Middleware
 app.use(cors());
@@ -122,13 +121,9 @@ app.get('/', (req, res) => {
       remove: 'DELETE /api/users/reading-list/:bookId',
       update: 'PUT /api/users/reading-list/:bookId',
       favorite: 'POST /api/users/reading-list/:bookId/favorite'
-<<<<<<< HEAD
-    },timestamp: new Date().toISOString(),
+    },
+    timestamp: new Date().toISOString(),
     status: 'Server is running successfully'
-    
-=======
-    }
->>>>>>> b573e999f43dc5a83a3db8d920e2687fd7968f8a
   });
 });
 
